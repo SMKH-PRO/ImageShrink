@@ -1,6 +1,7 @@
 const fs = window.require('fs');
+const {ipcRenderer} = require("electron")
 const SELECT = (target) => document.querySelector(`${target}`)
-let filess = []
+var filess = []
 
 const imgUploadInput = SELECT("#imgUploadInput")
 const warning = SELECT("#warning")
@@ -155,10 +156,13 @@ const updateNumOfImages = () => {
 
 
 
+const compressNow=()=>{
+  ipcRenderer.send("image:compress",filess)
+  //alert("WOW")
+}
 
 
-
-
+CompressBtn.addEventListener("click",compressNow)
 
 imgUploadInput.addEventListener("change", (e) => {
   let SelectedFiles = e.target.files

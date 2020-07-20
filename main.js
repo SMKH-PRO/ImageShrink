@@ -1,4 +1,4 @@
-const {app,BrowserWindow,Menu} = require("electron")
+const {app,BrowserWindow,Menu,ipcMain} = require("electron")
 const path = require("path")
 const url = require("url")
 let win;
@@ -17,8 +17,11 @@ const createWindow=()=>{
     })
     win.webContents.openDevTools()
 }
-
 app.on('ready',createWindow)
+
+ipcMain.on('image:compress',(e,d)=>{
+    console.log("ReceivedEVENT=> ",d)
+} )
 app.on('window-all-closed',()=>{
     if(process.platform !== 'darwin'){
         app.quit()
