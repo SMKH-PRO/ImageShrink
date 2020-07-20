@@ -82,49 +82,65 @@ const renderImages = () => {
 }
 
 
-const findDuplicate = () => {
+const findDuplicate = (forceAlert=false) => {
   if (filess && filess.length) {
-    let dupilcateFileNames = [...filess.map(f => f.name)]
-    let duplicateFiles = filess.filter((file, i) => dupilcateFileNames.indexOf(file.name) !== i)
+    let FileNames = [...filess.map(f => f.name)]
+    let duplicateFiles = filess.filter((file, i) => FileNames.indexOf(file.name) !== i)
     if (duplicateFiles.length) {
-     // alert(``)
+      // alert(``)
 
-     let countFiles= duplicateFiles.length
-     let fileStr= countFiles>1?"files":"file"
-      swal("DUPLICATE FILES DETECTED", `You've selected ${countFiles>1?countFiles:"a"} duplicate ${fileStr} , Would you like to un-select duplicate ${fileStr} having same name?`, {
-        icon: 'warning',
-        dangerMode: true,
-        buttons: {
-          cancel: true,
-           
-          never:"Never Ask",
-          confirm: "Yes !",
-        },
-      }).then((Yes) => {
-        if (Yes=="never") {
-            
-        } 
-        else if(Yes){
-          removeDuplicates()    
+      let countFiles = duplicateFiles.length
+      let fileStr = countFiles > 1 ? "files" : "file"
+      console.log("result from removeDup=> ",filess ," \n dupfilename=> ",FileNames," \n dupfiles=> ", duplicateFiles)
 
-        }
-      })
+      let shouldNotAsk = localStorage.getItem("NeverAsk")
+      let msg = `You've selected ${countFiles > 1 ? countFiles : "a"} duplicate ${fileStr}`
+      if (!shouldNotAsk||forceAlert) {
+        swal("DUPLICATE FILES DETECTED", `${msg} , Would you like to un-select duplicate ${fileStr} having same name?`, {
+          icon: 'warning',
+          dangerMode: true,
+          buttons: {
+            cancel: true,
+           ...forceAlert?{}:{ never: "Never Ask"},
+            confirm: "Yes !"
+          },
+        }).then((Yes) => {
+          if (Yes == "never") {
+            localStorage.setItem("NeverAsk", true)
+          }
+          else if (Yes) {
+            removeDuplicates()
+
+          }
+        })
+      }
+      else {
+        warning.innerHTML = `<span style='color:red'> 
+                                  <b>WARNING</b>
+                                  <p style="margin:0px;line-height:1">  ${msg} .  <button onClick="findDuplicate(true)" type="button"  class="btn btn-danger btn-rounded  btn-sm">REMOVE DUPLICATE</button></p>
+                                   
+
+                             </span>`
+      }
     }
 
   }
 }
 
 
-const removeDuplicates=()=>{
-  let dupilcateFileNames = [...filess.map(f => f.name)]
-  let duplicateFiles = filess.filter((file, i) => dupilcateFileNames.indexOf(file.name) !== i)
-  let uniqueFiles= filess.filter((file)=>!dupilcateFileNames.includes(file.name))
-   filess= [...uniqueFiles,...duplicateFiles]
-   renderImages()
-  swal("DONE","Removed Duplicate Files ",{icon:'success'})
+const removeDuplicates = () => {
+  let FileNames = filess.map(f => f.name)
+  let duplicateFiles = filess.filter((file, i) => FileNames.indexOf(file.name) !== i)
+  let duplicateFileNames = duplicateFiles.map(f=>f.name)
+  let uniqueFiles = filess.filter((file) => !duplicateFileNames.includes(file.name))
+  filess = [...uniqueFiles, ...duplicateFiles]
+
+  console.log("result from removeDup=> ",filess ," \n filename=> ",FileNames," \n dupfiles=> ", duplicateFiles, "\n unique fil=> ", uniqueFiles)
+  renderImages()
+  swal("DONE", "Removed Duplicate Files ", { icon: 'success' }).then(()=>renderImages())
 
 
-  
+
 }
 
 
