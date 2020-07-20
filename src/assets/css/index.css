@@ -1,0 +1,45 @@
+body{
+    background-color: #f8f8f8
+}
+
+.UploadImgParent{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: center;
+    height: 99vh;
+}
+
+.displayedImg{
+    display:flex;
+  margin:10px;
+}
+#displayImages{
+    display:flex;
+    flex-direction: row !important;
+    overflow: auto;
+    max-width: 97vw;
+    padding: 10px;
+}
+.displayedImg img{
+    width: 240px;
+    border-radius: 10px;
+    height: 200px;
+    object-fit:cover;
+
+
+
+}
+#ImageView{
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+
+#warning{
+    /* color:red; */
+    padding:15px !important;
+}
+div:has(> button.swal-button.swal-button--never.neverAskBtn){
+    float: left !important;
+}

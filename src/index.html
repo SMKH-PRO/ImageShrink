@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/mdbootstrap/css/mdb.min.css">
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/css/customScroll.css">
+    <link rel="stylesheet" href="./assets/css/css-lightbox/perfundo.with-icons.min.css">
+    <link rel="stylesheet" href="./assets/css/fontawesome-free-5.14.0-web/css/all.css">
+    <script src="./assets/css/css-lightbox/perfundo.min.js"></script>
+    <script src="./assets/js/sweetalert.min.js"></script>
+</head>
+
+<body>
+    <div class="UploadImgParent">
+
+        <div>
+            <div id="displayImages">
+
+
+            </div>
+            <p id="warning"></p>
+            <form class="md-form">
+                <div class="file-field">
+                    <div class="mb-4">
+                        <img src="./assets/images/default.png" id="defaultImg" style="max-width: 400px;"
+                            class="img-fluid" alt="example placeholder">
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="btn  btn-primary btn-rounded float-left">
+                            <span id="addImgBtn">Add Image(s)</span>
+                            <input type="file" id="imgUploadInput" accept="image/x-png,image/jpeg" multiple>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+            <div style="visibility: hidden;" id="compressContainer" class="d-flex justify-content-center">
+                <div class="btn  btn-outline-default  btn-rounded">
+                     <span id="compress"> <i class="fas fa-compress-arrows-alt"></i> Compress Now</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ViewImage" class="perfundo__overlay fadeInLeft">
+        <img src="assets/images/default.jpg" id="ImageView" alt="Demo image">
+        <a href="#perfundo-untarget" class="perfundo__close perfundo__control">Close</a>
+    </div>
+
+
+    <script src="./assets/css/bootstrap/js/jquery.min.js"></script>
+    <script src="./assets/css/bootstrap/js/jquery-3.5.1.slim.min.js"></script>
+    <script src="./assets/css/bootstrap/js/popper.min.js"></script>
+    <script src="./assets/css/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./assets/js/ImageHandling.js"></script>
+
+
+</body>
+
+</html>
