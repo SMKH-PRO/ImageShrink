@@ -234,7 +234,7 @@ const setLoading=(isLoading=true,isProcessing=false)=>{
     if(isLoading){
     const animPath=isProcessing?"./assets/anim/processing.json":"./assets/anim/compressing.json"
     const txt= isProcessing?"<b>Almost Done, Processing....</b>":`
-     <b style="color:red">COMPRESSING IMAGES</b>
+     <b style="color:red">COMPRESSING IMAGE(s)</b>
      <p style="font-size:15px">This may take a few minutes depending on number of images you've selected & also your computer's speed and capability.</p>
     `
     setLoadingText(txt)
@@ -323,6 +323,22 @@ ipcRenderer.on("Compress:Completed",async (e,d)=>{
                                                 <span  onClick="openFile('${sourcePath}')" title="Open Original Image" class="btn-floating btn-sm btn-default"><i class="fas fa-file-image"></i></span>
                                                 <span onClick="openFile('${destinationPath}')"  title="Open Shrinked Image" class="btn-floating btn-primary"><i class="fas fa-image"></i></span>
                                                 <span onClick="showFile('${destinationPath}')" title="Show File Folder" class="btn-floating  btn-secondary"><i class="fas fa-folder"></i></span>
+
+
+                                                <div class="fixed-action-btn">
+                                                <a class="btn-floating btn-lg red">
+                                                  <i class="fas fa-pencil-alt"></i>
+                                                </a>
+                                              
+                                                <ul class="list-unstyled">
+                                                  <li><a class="btn-floating red"><i class="fas fa-star"></i></a></li>
+                                                  <li><a class="btn-floating yellow darken-1"><i class="fas fa-user"></i></a></li>
+                                                  <li><a class="btn-floating green"><i class="fas fa-envelope"></i></a></li>
+                                                  <li><a class="btn-floating blue"><i class="fas fa-shopping-cart"></i></a></li>
+                                                </ul>
+                                              </div>
+
+                                              
                                              </div>
                                           </div>
                                    </li>
