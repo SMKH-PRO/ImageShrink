@@ -1,10 +1,22 @@
 const fs = window.require('fs');
-const {ipcRenderer} = require("electron")
-const SELECT = (target) => document.querySelector(`${target}`)
-var filess = []
+const {ipcRenderer,shell} = require("electron")
+const lottie = require("lottie-web")
+const byteSize = require('byte-size')
 
+const SELECT = (target) => document.querySelector(`${target}`)
 const imgUploadInput = SELECT("#imgUploadInput")
 const warning = SELECT("#warning")
+var filess = []
+
+const showFile=(filePath)=>{
+    shell.showItemInFolder(filePath)
+}
+
+const openFile=(filePath)=>{
+    shell.openPath(filePath)
+    
+}
+const getFileInfo=(filePath)=>fs.statSync(filePath)
 
 const setImgBase64 = (imgEl, file) => {
 
@@ -18,18 +30,19 @@ const setImgBase64 = (imgEl, file) => {
 
 }
 const renderImages = () => {
-    const files = filess && Array.from(filess)
-    const defaultImg = SELECT("#defaultImg")
-    const addImgBtn = SELECT("#addImgBtn")
-    imgUploadInput.disabled = true;
+    const files = filess && Array.from(filess);
+    const defaultImg = SELECT("#defaultImg");
+    const addImgBtn = SELECT("#addImgBtn");
+    let displayImages = SELECT("#displayImages");
 
+    imgUploadInput.value=""
     let numOfFiles = files.length
 
-    if (numOfFiles < 1) {
-        SELECT("#compressContainer").style.visibility = "hidden"
-    } else {
+    if (numOfFiles ) {
         SELECT("#compressContainer").style.visibility = "visible"
-    }
+        imgUploadInput.disabled = true;
+
+ 
     if (numOfFiles > 49) {
         warning.innerHTML = `<b style="font-weight:bold; color:red;">WARNING:</b><br/> 
                                <span style="padding:10px;text-align:left">
@@ -39,14 +52,13 @@ const renderImages = () => {
     }
     addImgBtn.innerHTML = `LOADING.....`
     if (defaultImg && numOfFiles > 0) 
-        defaultImg.remove();
+        defaultImg.style.display="none";
     
 
 
     setTimeout(() => {
 
         if (files && numOfFiles > 0) {
-            let displayImages = SELECT("#displayImages")
             displayImages.innerHTML = ""
             files ?. forEach((file, i) => {
                 let divEl = document.createElement("div")
@@ -87,6 +99,14 @@ const renderImages = () => {
         }
 
     }, 0);
+} else {//reset
+    SELECT("#compressContainer").style.visibility = "hidden"
+    imgUploadInput.disabled = false;
+    addImgBtn.innerHTML = `ADD IMAGES`
+    defaultImg.style.display="block";
+    displayImages.innerHTML=""
+    warning.innerHTML = "";
+}
 }
 
 const hasDuplicate=()=>{
@@ -114,7 +134,7 @@ const findDuplicate = (forceAlert = false) => {
                                <p style="margin:0px;line-height:1">  ${msg} .  <button onClick="findDuplicate(true)" type="button"  class="btn btn-danger btn-rounded  btn-sm">REMOVE DUPLICATE</button></p>
                               </span>`
             if (! shouldNotAsk || forceAlert) {
-                swal("DUPLICATE FILES DETECTED", `${msg} , Would you like to un-select duplicate ${fileStr} having same name?`, {
+                swal("DUPLICATE FILES DETECTED", `${msg},\nThis warning indicates that you've selected multiple files with same name,\n\nWould you like to un-select duplicate ${fileStr} having same name? `, {
                     icon: 'warning',
                     dangerMode: true,
                     buttons: {
@@ -136,6 +156,7 @@ const findDuplicate = (forceAlert = false) => {
                 })
             } else {
                 warning.innerHTML=duplInner
+                
             }
         }
 
@@ -175,6 +196,7 @@ const removeDuplicates = (showAlert=true) => {
 
 
 
+
 const updateNumOfImages = () => {
     warning.innerHTML = `
                 <span style="text-align:left; color:green">
@@ -186,15 +208,142 @@ const updateNumOfImages = () => {
 }
 
 
-const compressNow = () => {
 
-    // filess.forEach(file => {
-    //     ipcRenderer.send("image",file.path )
-    // });
-    // alert("WOW")
 
-    ipcRenderer.send("image",filess )
+
+
+const LoadLottie=(path="./assets/anim/compressing.json",id="loading",loop=true,autoplay=true)=>{
+  let container = SELECT(`#${id}`)
+  container.innerHTML=""//First Clear The Contianer
+    lottie.loadAnimation({
+        container, // the dom element that will contain the animation
+        renderer: 'svg',
+        loop,
+        autoplay,
+        path // the path to the animation json
+      });
+    }
+    LoadLottie()
+
+const setLoadingText=(txt)=>SELECT("#loadingMSG").innerHTML=txt;
+
+const setLoading=(isLoading=true,isProcessing=false)=>{
+    const parentDiv= SELECT("#loadingDiv") 
+    SELECT("#loading").innerHTML=""
+
+    if(isLoading){
+    const animPath=isProcessing?"./assets/anim/processing.json":"./assets/anim/compressing.json"
+    const txt= isProcessing?"<b>Almost Done, Processing....</b>":`
+     <b style="color:red">COMPRESSING IMAGES</b>
+     <p style="font-size:15px">This may take a few minutes depending on number of images you've selected & also your computer's speed and capability.</p>
+    `
+    setLoadingText(txt)
+    LoadLottie(animPath)   
+    parentDiv.style.display="block"
+    }
+    else{
+        parentDiv.style.display="none"
+
+    }
 }
+
+const compressNow = () => {
+  let paths= filess.map(f=>f.path)
+   setLoading()
+   ipcRenderer.send('image:compress',paths )
+ //   ipcRenderer.send("image",filess ) Cant pass arrray or object due to some errors.
+}
+
+
+ipcRenderer.on("Compress:Completed",async (e,d)=>{
+    let SuccessList= SELECT("#successList")
+    SuccessList.innerHTML=""
+    setLoading(true,true)
+    console.log("DATA RECEIVED ON IMG HANDILIGN=>> ",d)
+
+    let filesWithInfo =await Promise.all(d.map(async(d,i)=>{
+
+                        let beforeShrink = await getFileInfo(d?.sourcePath)
+                        let afterShrink = await getFileInfo(d?.destinationPath)
+
+                        return {...d,beforeShrink,afterShrink}
+                        }))
+
+                        console.log("FilesWithINfo",filesWithInfo)
+
+ filesWithInfo.forEach(f=>{
+
+    let destinationPath= f?.destinationPath
+    let sourcePath= f?.sourcePath
+
+
+
+
+    let name = destinationPath.substring(destinationPath.lastIndexOf('/')+1)  
+    
+    let sizeAfterShrink= f.afterShrink.size
+    let sizeBeforeShrink= f.beforeShrink.size
+    let sizeShrinked =sizeBeforeShrink-sizeAfterShrink
+
+    let sizeAfterShrinkPretty = byteSize(sizeAfterShrink)
+    let sizeBeforeShrinkPretty = byteSize(sizeBeforeShrink)
+    let sizeShrinkedPretty = byteSize(sizeShrinked)
+
+    let percentReduced  =Math.round((sizeShrinked/sizeBeforeShrink)*100)
+    
+    console.log("BeforeShrink",f.beforeShrink.size," sourcePath=> ",f.sourcePath)
+  
+
+       SuccessList.innerHTML+= ` <li class="list-group-item">
+                                           <div style="display:flex;">
+                                               <div class="avatar-container p-${percentReduced}">
+                                                  <img data-tip="${destinationPath}" title="${destinationPath}" src="${destinationPath}"  alt="" class="avatar">
+                                                  <div class="info js-active"><div class="info-inner">-${percentReduced}%</div></div>
+                                               </div>                      
+                                               <div>  
+                                                   <p  title="${name}" class="mb-0"><b>${name.length>35?"...."+name.substring(name.length-32,name.length):name}</b> </p>
+                                                   <br>
+                                                   <p data-html="true" title="Original Size: ${sizeBeforeShrinkPretty} ,<br/>After Shrink: ${sizeAfterShrinkPretty}">
+                                                        <b>Size:</b> 
+                                                        <span style="color:red;text-decoration-line:line-through">${sizeBeforeShrinkPretty}</span>
+                                                        ${sizeAfterShrinkPretty}
+                                                    </p>
+                                               
+                                                    <p data-html="true" title="Reduced ${percentReduced}% .">
+                                                       <b>Shrinked:</b> 
+                                                        <span style="color:green">${sizeShrinkedPretty}</span>
+                                                    </p>
+                                                    
+
+                                               </div>
+                                               
+                                          </div>
+                                          <div style="display:flex; justify-content:flex-end">
+                                            <div >
+                                                <span  onClick="openFile('${sourcePath}')" title="Open Original Image" class="btn-floating btn-sm btn-default"><i class="fas fa-file-image"></i></span>
+                                                <span onClick="openFile('${destinationPath}')"  title="Open Shrinked Image" class="btn-floating btn-primary"><i class="fas fa-image"></i></span>
+                                                <span onClick="showFile('${destinationPath}')" title="Show File Folder" class="btn-floating  btn-secondary"><i class="fas fa-folder"></i></span>
+                                             </div>
+                                          </div>
+                                   </li>
+
+                                   `
+   })
+
+
+
+
+    setTimeout(() => {
+        setLoading(false)
+        filess=[]
+        renderImages()
+        $('#SuccessModal').modal()
+        // Tooltips Initialization
+    $("[title]").tooltip();
+
+   
+    }, 100); 
+})
 
 
 CompressBtn.addEventListener("click", compressNow)
@@ -211,3 +360,5 @@ imgUploadInput.addEventListener("change", (e) => {
     }
 })
 // SELECT("#imgUploadInput").addEventListener("drop",(e)=>console.log("DROP=> ",e))
+
+

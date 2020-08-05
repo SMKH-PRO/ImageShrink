@@ -2,8 +2,9 @@ const path = require("path")
 const os = require("os")
 const url = require("url")
 const slash = require("slash")
-const {CompressQuality,SavePath}= require("./constant")
+const {CompressQuality,SavePath,ImageShrink}= require("./constant")
 const {app,BrowserWindow,Menu,ipcMain} = require("electron")
+
 
 let win;
 
@@ -23,11 +24,15 @@ const createWindow=()=>{
 }
 app.on('ready',createWindow)
 
-ipcMain.on('image',(e,filePath)=>{
-    console.log("ReceivedEVENT=> ",filePath)
+ipcMain.on('image:compress',(e,filesPath)=>{
+    console.log("event recievedx")
+    console.log("ReceivedEVENT=> ",filesPath)
  
    console.log("SavePath=>> ",SavePath)
    console.log("quality=> ",CompressQuality)
+
+   win.webContents.send("Compress:Started",true)
+    ImageShrink(filesPath).then(r=>{win.webContents.send("Compress:Completed",r)})
 } )
 app.on('window-all-closed',()=>{
     if(process.platform !== 'darwin'){
