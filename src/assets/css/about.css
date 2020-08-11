@@ -1,0 +1,18 @@
+.linkStyle{
+    color:cornflowerblue; 
+    text-decoration: underline;
+    cursor: pointer;
+}
+.githubButtonLeft{
+    width: 70px;border-radius: 0px;padding: 6px;border:0px;font-size: 15px;
+}
+.githubButtonRight{
+    width: 40px; background-color: white;border:0px
+}
+.githubButtonParent{
+    display: inline-flex; border:2px solid gray; width: 110px;border-radius: 2px;
+}
+
+.githubButtonParent:active{
+opacity: .5;
+}

@@ -2,7 +2,7 @@ const fs = window.require('fs');
 const {ipcRenderer, shell} = require("electron")
 const lottie = require("lottie-web")
 const byteSize = require('byte-size')
-const {LoadLottie, CompressQuality, totalCompress, NodeLocalStorage} = require('./assets/js/constant.js')
+const {LoadLottie, CompressQuality, totalCompress, NodeLocalStorage,totalMBSaved} = require('./assets/js/constant.js')
 const SELECT = (target) => document.querySelector(`${target}`)
 const imgUploadInput = SELECT("#imgUploadInput")
 const warning = SELECT("#warning")
@@ -53,6 +53,26 @@ const CheckTotalCompress = () => {
         }
     }
 }
+
+
+
+const CheckTotalMBsSaved = () => {
+
+    let tS= byteSize(totalMBSaved())
+
+
+    if (tS) {
+        let totalMBSavedEL= SELECT("#totalMBSaved")
+        let tStitle=`You saved total ${tS} disk space by shrinking ${totalCompress()} Images 😮`
+        totalMBSavedEL.title= tStitle
+        totalMBSavedEL.setAttribute("data-original-title",tStitle)
+        totalMBSavedEL.innerHTML=`<b><i class="fas fa-save"></i> ${tS>1?tS-1+"+":tS}  </b>`
+
+       
+    }
+}
+CheckTotalMBsSaved()
+
  CheckTotalCompress()
 const getFileInfo = (filePath) => fs.statSync(filePath)
 
@@ -382,9 +402,9 @@ ipcRenderer.on("Compress:Completed", async (e, d) => {
 
                                    `
     })
-
-
+  
     setTimeout(() => {
+
         SELECT("#SucessInfo").innerHTML = `Shrinked ${
             filesWithInfo.length
         } Images with <b  onclick="openSettings()" style="cursor:pointer" title="click to change settings">Compress Quality: <b title="Compress Quality Can Be Chaneged Anytime From Settings, Click to Change."> ${
@@ -400,9 +420,25 @@ ipcRenderer.on("Compress:Completed", async (e, d) => {
             NodeLocalStorage.setItem("totalCompress",totalCompressNow)
             }
             CheckTotalCompress()
+            CountMBSaved(filesWithInfo)
 
     }, 100);
 })
+
+CountMBSaved=(ArrFiles)=>{
+
+  let numbers=  ArrFiles.map(f=>parseFloat(f.afterShrink.size)).filter(d=>d&&!isNaN(d))
+   let sumOfNumbers= numbers.reduce((a,c)=>parseFloat(a+c))
+
+   if(sumOfNumbers){
+     let totalMBs= parseFloat( totalMBSaved())
+     NodeLocalStorage.setItem("totalMBSaved",totalMBs+sumOfNumbers)
+   }
+
+   CheckTotalMBsSaved()
+
+}
+
 
 ipcRenderer.on("Compress:Error", (e, d) => {
     setLoading(false)

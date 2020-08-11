@@ -1,17 +1,22 @@
 {
   "name": "ImageShrink",
+  "productName": "ImageShrink",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "dev": "nodemon --exec electron ."
+    "dev": "nodemon --exec electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin  --arch=x64 --icon=src/assets/images/icons/Mac/icon.icns --prune=true --out=release-builds",
+    "package-windows": "electron-packager . --overwrite   --platform=win32  --arch=ia32 --icon=src/assets/images/icons/Windows/icon.ico --prune=false --out=release-builds",
+    "package-linux": "electron-packager . --overwrite --asar=true --platform=linux  --arch=x64 --icon=src/assets/images/icons/Linux/icon.png --prune=false --out=release-builds"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^9.1.0"
+    "electron": "^9.1.0",
+    "electron-packager": "^15.0.0"
   },
   "dependencies": {
     "byte-size": "^7.0.0",

@@ -3,12 +3,12 @@ const os = require("os")
 const url = require("url")
 const slash = require("slash")
 const {CompressQuality, SavePath, ImageShrink} = require("./src/assets/js/constant")
-const {app, BrowserWindow, Menu, ipcMain} = require("electron")
+const {app, BrowserWindow, Menu, ipcMain,shell} = require("electron")
 
-process.env.NODE_ENV = "dev"
+process.env.NODE_ENV = "prod"
 
 const isMac = process.platform == 'darwin'
-const isDev = process.env.NODE_ENV !== "production"
+const isDev = process.env.NODE_ENV == "dev"
 
 
 let win;
@@ -18,12 +18,16 @@ const createAboutWindow = () => {
 
     if (! aboutWindow) { // If not already opened
         aboutWindow = new BrowserWindow({
-            width: 400,
-            height: 350,
+            width: 500,
+            height: 580,
             webPreferences: {
                 nodeIntegration: true
             },
-            resizable: false
+            resizable:isDev,
+            minimizable:false,
+             maximizable:false,
+             fullscreen:false,
+              fullscreenable:false
 
         })
         aboutWindow.loadURL(url.format({
@@ -35,7 +39,10 @@ const createAboutWindow = () => {
             aboutWindow = null;
         })
         // settingsWindow.webContents.openDevTools()
-
+        aboutWindow.on('new-window', function(event, url){
+            event.preventDefault();
+            shell.openExternal(url);
+          });
     } else { // Handle Behaviour When Opening again from the menu.
         console.log("Dont Open another instance of about window.")
 
@@ -52,7 +59,11 @@ const createSettingsWindow = () => {
             webPreferences: {
                 nodeIntegration: true
             },
-            resizable: ! isDev
+            resizable:isDev,
+            minimizable:false,
+             maximizable:false,
+             fullscreen:false,
+              fullscreenable:false
 
         })
         settingsWindow.loadURL(url.format({
