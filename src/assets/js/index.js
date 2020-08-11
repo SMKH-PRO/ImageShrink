@@ -57,11 +57,11 @@ const CheckTotalCompress = () => {
 
 
 const CheckTotalMBsSaved = () => {
+    let totalSave= totalMBSaved()
+    let tS= byteSize(totalSave)
 
-    let tS= byteSize(totalMBSaved())
 
-
-    if (tS) {
+    if (totalSave) {
         let totalMBSavedEL= SELECT("#totalMBSaved")
         let tStitle=`You saved total ${tS} disk space by shrinking ${totalCompress()} Images 😮`
         totalMBSavedEL.title= tStitle
