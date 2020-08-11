@@ -1,0 +1,26 @@
+.locationShadowBox{
+    box-shadow: 5px 5px 15px 0px silver;
+    border-radius: 50px;
+   margin-left: 10px;
+   margin-right: 10px;
+   min-height: 30px;
+display: flex;
+justify-content: space-around;
+align-items: center;
+}
+#folderPath{font-weight: bold;cursor: pointer;}
+
+.resetBTN{
+    position: fixed;
+    bottom:10px;
+    right: 10px;
+}
+
+#settAnim{
+    max-width: 150px;
+    max-height: 150px;
+}
+
+[title]{
+    cursor: pointer;
+}

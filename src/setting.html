@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - ImageShrink</title>
+    <link rel="stylesheet" href="./assets/css/mdbootstrap/css/mdb.min.css">
+    <link rel="stylesheet" href="./assets/css/settings.css">
+
+</head>
+<body style="text-align: center;background-color:#f5f5f5">
+    <div style="display: flex;justify-content: center;"><div id="settAnim"></div></div>
+    <b style="text-transform: uppercase;margin:5">ImageShrink Settings</b>
+
+    <p title="Quality Of The Compression=> The Lower the Quality, The Smaller the file Size.">
+        QUALITY: <b id="qualityDisplay" style="color:green">0</b>
+    </p>
+    <form class="multi-range-field my-5 pb-5">
+        <input id="qualityInput" style="width: 70%;"  id="multi1" class="multi-range" type="range" />
+    </form>
+
+    <p title="Folder where images are saved after compression.">
+        Folder Location:
+    </p>
+    <div class="locationShadowBox" >
+            <button onclick="changeFolderDialog()" class="btn btn-outline-success btn-rounded waves-effect btn-sm float-left">
+              <span>CHANGE</span>
+            </button>
+           
+
+          <p onclick="OpenDownloadFolder()" id="folderPath">Please Wait, Loading......</p>
+     </div>
+
+
+
+
+     <p id="warning" style="padding: 20px;color: green;"></p>
+
+
+
+     <button id="resetBTN" style="display: none;" class="btn btn-default resetBTN">RESET TO DEFAULT <i class="fa fa-undo ml-1"></i></button>
+     <script src="./assets/css/bootstrap/js/jquery.min.js"></script>
+     <script src="./assets/css/bootstrap/js/jquery-3.5.1.slim.min.js"></script>
+     <script src="./assets/css/bootstrap/js/popper.min.js"></script>
+     <script src="./assets/css/bootstrap/js/bootstrap.min.js"></script>
+     <script src="./assets/css/bootstrap/js/mdb.js"></script>
+     <script src="./assets/js/settings.js"></script>
+</body>
+</html>

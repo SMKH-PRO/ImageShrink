@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ImageShrink</title>
     <link rel="stylesheet" href="./assets/css/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/mdbootstrap/css/mdb.min.css">
     <link rel="stylesheet" href="./assets/css/index.css">
@@ -27,13 +27,14 @@
 
 
       </div>
-
+      <p data-html="true"  id="totalCompress"></p>
     <div class="UploadImgParent">
         <div>
             <div id="displayImages">
 
 
             </div>
+
             <p id="warning"></p>
             <form class="md-form">
                 <div class="file-field">
@@ -58,8 +59,8 @@
         </div>
     </div>
 
-    <div id="ViewImage" class="perfundo__overlay fadeInLeft">
-        <img src="assets/images/default.jpg" id="ImageView" alt="Demo image">
+    <div id="ViewImage" data-html="true" class="perfundo__overlay fadeInLeft">
+        <img  data-html="true" src="assets/images/default.jpg" id="ImageView" alt="Demo image">
         <a href="#perfundo-untarget" class="perfundo__close perfundo__control">Close</a>
     </div>
 
@@ -77,11 +78,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title w-100" id="myModalLabel">SUCCESS!</h4>
+          
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
+          <p id="SucessInfo" style="color:green">Compressed 0 Images with 50 Quality Setting.</p>
             <ul class="list-group" id="successList">
                 
                
@@ -103,9 +106,7 @@
     <script src="./assets/css/bootstrap/js/popper.min.js"></script>
     <script src="./assets/css/bootstrap/js/bootstrap.min.js"></script>
     <script src="./assets/css/bootstrap/js/mdb.js"></script>
-    <script type="text/javascript" src="https://mdbootstrap.com/wp-content/themes/mdbootstrap4/js/bundles/4.19.1/compiled-addons.min.js"></script>
-    <script type="text/javascript" src="https://mdbootstrap.com/wp-content/themes/mdbootstrap4/js/plugins/mdb-plugins-gathered.min.js"></script>
-    <script src="./assets/js/ImageHandling.js"></script>
+    <script src="./assets/js/index.js"></script>
 
 
 </body>
