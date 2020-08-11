@@ -17,6 +17,7 @@ const msiCreator = new MSICreator({
     outputDirectory: OUT_DIR,
 
     // Configure metadata
+    description: 'An open-source application to compress images with amazingly fast experience',
     exe: 'ImageShrink',
     name: 'ImageShrink',
     manufacturer: 'KashanHaider.com',
