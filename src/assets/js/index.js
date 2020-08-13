@@ -6,16 +6,18 @@ const {LoadLottie, CompressQuality, totalCompress, NodeLocalStorage,totalMBSaved
 const SELECT = (target) => document.querySelector(`${target}`)
 const imgUploadInput = SELECT("#imgUploadInput")
 const warning = SELECT("#warning")
+const path = require("path")
+
 var filess = []
 
 const showFile = (filePath) => {
-    shell.showItemInFolder(filePath)
+    shell.showItemInFolder(path.resolve(filePath))
 }
 
 const openFile = (filePath) => {
-    shell.openPath(filePath)
-
-}
+   // shell.openPath(path.resolve(filePath))
+ alert(filePath)
+} 
 
 
 const CheckTotalCompress = () => {
@@ -304,7 +306,7 @@ const setLoading = (isLoading = true, isProcessing = false) => {
 }
 
 const compressNow = () => {
-    let paths = filess.map(f => f.path)
+    let paths = filess.map(f =>path.resolve(f.path))
     setLoading()
     ipcRenderer.send('image:compress', paths)
     // ipcRenderer.send("image",filess ) Cant pass arrray or object due to some errors.
@@ -315,6 +317,9 @@ const openSettings = () => {
 }
 
 ipcRenderer.on("Compress:Completed", async (e, d) => {
+
+
+    if(d && Array.isArray(d) && d.length){
     let totalCompressedUntilNow= totalCompress()
      let totalCompressNow = parseInt(totalCompressedUntilNow)+parseInt(d.length)
    
@@ -335,7 +340,7 @@ ipcRenderer.on("Compress:Completed", async (e, d) => {
         }
     }))
 
-    // console.log("FilesWithINfo",filesWithInfo)
+    console.log("FilesWithINfo",filesWithInfo)
 
     filesWithInfo.forEach(f => {
 
@@ -389,8 +394,8 @@ ipcRenderer.on("Compress:Completed", async (e, d) => {
                                           <div style="display:flex; justify-content:flex-end">
                                             <div >
                                                 <span  onClick="openFile('${sourcePath}')" title="Open Original Image" class="btn-floating btn-sm btn-default"><i class="fas fa-file-image"></i></span>
-                                                <span onClick="openFile('${destinationPath}')"  title="Open Shrinked Image" class="btn-floating btn-primary"><i class="fas fa-image"></i></span>
-                                                <span onClick="showFile('${destinationPath}')" title="Show File Folder" class="btn-floating  btn-secondary"><i class="fas fa-folder"></i></span>
+                                                <span onClick="openFile('${path.resolve(destinationPath)}')"  title="Open Shrinked Image" class="btn-floating btn-primary"><i class="fas fa-image"></i></span>
+                                                <span onClick="showFile('${path.resolve(destinationPath)}')" title="Show File Folder" class="btn-floating  btn-secondary"><i class="fas fa-folder"></i></span>
 
 
                                                 
@@ -423,6 +428,13 @@ ipcRenderer.on("Compress:Completed", async (e, d) => {
             CountMBSaved(filesWithInfo)
 
     }, 100);
+
+
+}
+else{
+    setLoading(false)
+      warning.innerHTML=`Error: Compression failed, Unknown Error Occurred.`
+}
 })
 
 CountMBSaved=(ArrFiles)=>{

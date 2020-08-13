@@ -4,8 +4,7 @@ const url = require("url")
 const slash = require("slash")
 const {CompressQuality, SavePath, ImageShrink} = require("./src/assets/js/constant")
 const {app, BrowserWindow, Menu, ipcMain,shell} = require("electron")
-
-process.env.NODE_ENV = "prod"
+process.env.NODE_ENV = "dev"
 
 const isMac = process.platform == 'darwin'
 const isDev = process.env.NODE_ENV == "dev"

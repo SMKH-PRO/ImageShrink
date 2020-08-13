@@ -31,6 +31,9 @@ exports.CompressQuality = () => userDefinedQuality() && !isNaN(userDefinedPath()
 exports.ImageShrink = async (filesPath) => {
     let CQ = this.CompressQuality()
     let pngCQ = CQ / 100
+    if(pngCQ>.99){
+        pngCQ= pngCQ-.2
+    }
     let SP = this.SavePath()
     return new Promise((res, rej) => {
 
@@ -44,7 +47,7 @@ exports.ImageShrink = async (filesPath) => {
                     ),
                     imageminPngquant(
                         {
-                            quality: [pngCQ, pngCQ]
+                            quality: [pngCQ, parseFloat(pngCQ)+.2]
                         }
                     )
                 ]
