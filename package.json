@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^9.1.0",
+    "electron": "^18.3.7",
     "electron-packager": "^15.0.0",
     "electron-wix-msi": "^3.0.0"
   },
